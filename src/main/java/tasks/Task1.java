@@ -13,6 +13,8 @@ import java.util.Set;
 нужно их отсортировать в том же порядке, что и переданные id.
 Оценить асимптотику работы
  */
+
+// Асимптотика O(n2*log(n)): [O(n*log(n)) = sorted] * [O(n) = personIds]
 public class Task1 {
 
   private final PersonService personService;
@@ -23,6 +25,9 @@ public class Task1 {
 
   public List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = personService.findPersons(personIds);
-    return Collections.emptyList();
+    return persons.stream()
+            .sorted((p1, p2) ->
+                Integer.compare(personIds.indexOf(p1.id()), personIds.indexOf(p2.id())))
+            .toList();
   }
 }
