@@ -1,10 +1,13 @@
 package tasks;
 
+import common.Area;
 import common.Person;
 import common.PersonService;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /*
 Задача 1
@@ -14,7 +17,7 @@ import java.util.Set;
 Оценить асимптотику работы
  */
 
-// Асимптотика O(n2*log(n)): [O(n*log(n)) = sorted] * [O(n) = personIds]
+// Асимптотика O(2n): [O(n) = personsMap] + [O(n) = personIds]
 public class Task1 {
 
   private final PersonService personService;
@@ -25,9 +28,8 @@ public class Task1 {
 
   public List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = personService.findPersons(personIds);
-    return persons.stream()
-            .sorted((p1, p2) ->
-                Integer.compare(personIds.indexOf(p1.id()), personIds.indexOf(p2.id())))
-            .toList();
+    Map<Integer, Person> personsMap = persons.stream()
+        .collect(Collectors.toMap(person -> person.id(), person -> person));
+    return personIds.stream().map(personId -> personsMap.get(personId)).toList();
   }
 }

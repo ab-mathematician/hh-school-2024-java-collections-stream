@@ -3,6 +3,7 @@ package tasks;
 import common.Person;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -19,8 +20,7 @@ public class Task2 {
                                                      int limit) {
 
     return Stream.concat(persons1.stream(), persons2.stream())
-            .sorted(
-              (p1, p2) -> p1.createdAt().compareTo(p2.createdAt()))
+            .sorted(Comparator.comparing(Person::createdAt))
             .limit(limit).toList();
   }
 }

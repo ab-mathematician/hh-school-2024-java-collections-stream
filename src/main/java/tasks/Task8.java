@@ -15,12 +15,7 @@ import java.util.stream.Stream;
   Сервис умеет по personId искать их резюме (у каждой персоны может быть несколько резюме)
   На выходе хотим получить объекты с персоной и ее списком резюме
  */
-/* Не понятно, как должен работать / работает сервис PersonService, а конкретно, его методы.
-   Потому что я ожидаю, что буду передавать в findResumes() personId, а не Collection<Integer>.
-   Если для каждого personId существует ровно один Person, то можно предположить, что findPersons() вернет
-   набор Set<Person> из ровно того же числа элементов, что и на входе. Но при этом не понятно, чего ожидать
-   от findResumes(), если одному personId может соответствовать несколько резюме.
- */
+
 public class Task8 {
   private final PersonService personService;
 
@@ -34,15 +29,15 @@ public class Task8 {
             .map(person -> person.id())
             .collect(Collectors.toSet())
     );
-    Map<Integer, Set<Resume>> resumesMap;
 
     // Составляем HashMap из resumes. Так как они Set и каждый раз бегать по всему Set будет накладно.
-    resumesMap = resumes.stream()
-        .collect(Collectors.toMap(
-            Resume::personId,
-            resume -> Set.of(resume),
-            (existing, recent) -> Stream.concat(existing.stream(), recent.stream())
-                    .collect(Collectors.toSet())));
+    Map<Integer, Set<Resume>> resumesMap = resumes.stream().
+        collect(
+            Collectors.groupingBy(
+                Resume::personId,
+                Collectors.toSet()
+            )
+        );
 
       return persons.stream()
             .map(person -> new PersonWithResumes(

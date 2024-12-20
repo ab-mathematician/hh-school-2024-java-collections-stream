@@ -17,15 +17,18 @@ import java.util.stream.Collectors;
  */
 public class Task6 {
 
+  private static String peronAreaToString(Person person, Area area){
+    return String.format("%s - %s", person.firstName(), area.getName());
+  }
+
   public static Set<String> getPersonDescriptions(Collection<Person> persons,
                                                   Map<Integer, Set<Integer>> personAreaIds,
                                                   Collection<Area> areas) {
-    Map<Integer, String> areasMap = areas.stream()
+    Map<Integer, Area> areasMap = areas.stream()
             .collect(
                     Collectors.toMap(
-                            Area::getId,
-                            Area::getName
-                    )
+                        Area::getId,
+                        area -> area)
             );
 
     return persons.stream().
@@ -33,7 +36,9 @@ public class Task6 {
                     person -> personAreaIds.get(person.id())
                             .stream()
                             .map(areaId ->
-                                String.format("%s - %s", person.firstName(), areasMap.get(areaId))))
+                                peronAreaToString(person, areasMap.get(areaId))
+                            )
+            )
             .collect(Collectors.toSet());
   }
 }
